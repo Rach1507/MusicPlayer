@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.RadialGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="744.0" prefWidth="1139.0" style="-fx-background-color: #484848;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+   <children>
+      <VBox layoutX="6.0" layoutY="6.0" prefHeight="744.0" prefWidth="299.0" style="-fx-background-color: #1a1c20;" AnchorPane.bottomAnchor="-4.0" AnchorPane.leftAnchor="4.0" AnchorPane.topAnchor="4.0">
+         <children>
+            <Label prefHeight="42.0" prefWidth="303.0" text="    Hi user,">
+               <textFill>
+                  <RadialGradient centerX="0.5" radius="0.5">
+                     <stops>
+                        <Stop color="BLACK" />
+                        <Stop color="WHITE" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </textFill>
+               <font>
+                  <Font name="System Italic" size="24.0" />
+               </font>
+            </Label>
+            <JFXButton fx:id="allSongs" onAction="#initialize" prefHeight="66.0" prefWidth="303.0" text="All songs">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <textFill>
+                  <RadialGradient centerX="0.5" radius="0.5">
+                     <stops>
+                        <Stop color="BLACK" />
+                        <Stop color="WHITE" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </textFill>
+               <graphic>
+                  <ImageView fitHeight="40.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/baseline_library_music_white_18dp.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="allArtists" onAction="#artistInitialise" prefHeight="61.0" prefWidth="303.0" text="    Arstists">
+               <font>
+                  <Font size="19.0" />
+               </font>
+               <textFill>
+                  <RadialGradient centerX="0.5" radius="0.5">
+                     <stops>
+                        <Stop color="BLACK" />
+                        <Stop color="WHITE" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </textFill>
+               <graphic>
+                  <ImageView fitHeight="38.0" fitWidth="37.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/icons8_music_record_120px.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton prefHeight="53.0" prefWidth="303.0" text="    Albums">
+               <font>
+                  <Font size="19.0" />
+               </font>
+               <textFill>
+                  <RadialGradient centerX="0.5" radius="0.5">
+                     <stops>
+                        <Stop color="BLACK" />
+                        <Stop color="WHITE" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </textFill>
+               <graphic>
+                  <ImageView fitHeight="29.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/icons8_music_record_120px.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton prefHeight="59.0" prefWidth="303.0" text="   Playlists">
+               <font>
+                  <Font size="19.0" />
+               </font>
+               <textFill>
+                  <RadialGradient centerX="0.5" radius="0.5">
+                     <stops>
+                        <Stop color="BLACK" />
+                        <Stop color="WHITE" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </textFill>
+               <graphic>
+                  <ImageView fitHeight="37.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/icons8_playlist_24px.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </VBox>
+      <AnchorPane layoutX="300.0" layoutY="610.0" style="-fx-background-color: #1a1c20;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <JFXButton fx:id="playBtn" layoutX="314.0" layoutY="68.0" onAction="#play" prefHeight="55.0" prefWidth="122.0" text="  " />
+            <JFXTextField editable="false" labelFloat="true" layoutX="3.0" prefHeight="39.0" prefWidth="787.0" promptText="Song names listed here.................................." AnchorPane.bottomAnchor="84.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="0.0">
+               <font>
+                  <Font name="Bodoni MT Bold Italic" size="20.0" />
+               </font>
+               <focusColor>
+                  <RadialGradient centerX="0.5" centerY="0.3047619047619047" radius="0.5">
+                     <stops>
+                        <Stop color="BLACK" />
+                        <Stop color="WHITE" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </focusColor>
+               <unFocusColor>
+                  <RadialGradient centerX="0.5" radius="0.5">
+                     <stops>
+                        <Stop color="BLACK" />
+                        <Stop color="WHITE" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </unFocusColor>
+            </JFXTextField>
+            <JFXButton layoutX="467.0" layoutY="80.0" text="   ">
+               <graphic>
+                  <ImageView fitHeight="29.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/baseline_skip_next_white_18dp.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton layoutX="254.0" layoutY="79.0" text="  ">
+               <graphic>
+                  <ImageView fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@icons/baseline_skip_previous_white_18dp.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <ImageView fitHeight="40.0" fitWidth="47.0" layoutX="363.0" layoutY="76.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@icons/baseline_pause_white_18dp.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <TableView fx:id="songTable" layoutX="304.0" layoutY="154.0" prefHeight="476.0" prefWidth="835.0" style="-fx-background-color: #484848;" AnchorPane.bottomAnchor="118.0" AnchorPane.leftAnchor="304.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="154.0">
+        <columns>
+          <TableColumn prefWidth="63.0" />
+          <TableColumn id="songName" fx:id="songColumn" editable="false" minWidth="100.0" prefWidth="718.0" style="background: #002;" text="Track" />
+        </columns>
+      </TableView>
+      <Label layoutX="332.0" layoutY="28.0" prefHeight="66.0" prefWidth="214.0" text="All songs">
+         <textFill>
+            <RadialGradient centerX="0.5" radius="0.5">
+               <stops>
+                  <Stop color="BLACK" />
+                  <Stop color="WHITE" offset="1.0" />
+               </stops>
+            </RadialGradient>
+         </textFill>
+         <font>
+            <Font size="22.0" />
+         </font>
+      </Label>
+   </children>
+   <padding>
+      <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+   </padding>
+   <opaqueInsets>
+      <Insets />
+   </opaqueInsets>
+</AnchorPane>
