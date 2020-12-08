@@ -7,9 +7,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
 
 import java.io.File;
 import java.sql.*;
@@ -20,6 +22,10 @@ public class Controller extends ActionEvent {
 
     @FXML
     private  TableColumn<Song,String> songColumn;
+
+    @FXML
+    private TableColumn<Song,JFXButton> goToArtist;
+
     @FXML
     private  TableView<Song> songTable;
 
@@ -30,23 +36,76 @@ public class Controller extends ActionEvent {
 
     @FXML
     private JFXButton allArtists;
+    @FXML
+    private JFXButton allAlbums;
 
     @FXML
    private void initialize() throws Exception {
 
         songColumn.setCellValueFactory(new PropertyValueFactory<Song,String>("songName"));
-        ObservableList<Song> songList = getallSongs();
+        String query = "SELECT track_name from track";
+        ObservableList<Song> songList = getallSongs(query);
         songTable.refresh();
         songTable.setItems(songList);
 //    }
 }
+
+    public  void getArtistSongs() throws SQLException, ClassNotFoundException {
+
+
+        Song curr_artist = songTable.getSelectionModel().getSelectedItem();
+        String artist = curr_artist.getArtistName();
+
+
+        String query = String.format("%s=\"%s\";","SELECT track_name from track_artist where artist_name",artist);
+        System.out.println(query);
+        ObservableList<Song> artistSongs=getallSongs(query);
+        songTable.refresh();
+        songTable.setItems(artistSongs);
+
+    }
 
     @FXML
     private void artistInitialise() throws ClassNotFoundException, SQLException {
         songColumn.setCellValueFactory(new PropertyValueFactory<>("artistName"));
         ObservableList<Song> artistList = ArtistController.getallArtist();
         songTable.setItems(artistList);
+
+//
+//        Callback<TableColumn<Song,String>, TableCell<Song,String> > cellFactory =(param)-> {
+//            final TableCell<Song,String> cell =new TableCell<>(){
+//
+//                @Override
+//                public void updateItem(String item, boolean empty )  {
+//                    super.updateItem(item,empty);
+//                    if(empty){
+//                        setGraphic(null);
+//                        setText(null);
+//                    }
+//                    else{
+//                        artistList.
+//                    ().add(new JFXButton("Go to Artist"));
+//
+//                        }
+//                    }
+//
+//
+//                }
+//            };
+//
+//
+
+
     }
+
+    @FXML
+    private void albumInitialise() throws ClassNotFoundException, SQLException {
+        songColumn.setCellValueFactory(new PropertyValueFactory<>("albumName"));
+        ObservableList<Song> albumList = AlbumController.getallAlbums();
+        songTable.setItems(albumList);
+    }
+
+
 
 
     public void play() throws SQLException, ClassNotFoundException {
@@ -99,10 +158,9 @@ public class Controller extends ActionEvent {
         }
 
 
-    public static ObservableList<Song> getallSongs() throws SQLException, ClassNotFoundException {
+    public static ObservableList<Song> getallSongs(String query) throws SQLException, ClassNotFoundException {
 
         setConnection();
-        String query = "SELECT track_name from track";
         PreparedStatement prepmnt= null;
         try {
             prepmnt = connection.prepareStatement(query);

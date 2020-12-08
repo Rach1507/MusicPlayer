@@ -71,7 +71,7 @@
                   </ImageView>
                </graphic>
             </JFXButton>
-            <JFXButton prefHeight="53.0" prefWidth="303.0" text="    Albums">
+            <JFXButton fx:id="allAlbums" onAction="#albumInitialise" prefHeight="53.0" prefWidth="303.0" text="    Albums">
                <font>
                   <Font size="19.0" />
                </font>
@@ -163,10 +163,11 @@
             </ImageView>
          </children>
       </AnchorPane>
-      <TableView fx:id="songTable" layoutX="304.0" layoutY="154.0" prefHeight="476.0" prefWidth="835.0" style="-fx-background-color: #484848;" AnchorPane.bottomAnchor="118.0" AnchorPane.leftAnchor="304.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="154.0">
+      <TableView fx:id="songTable" layoutX="308.0" layoutY="158.0" prefHeight="468.0" prefWidth="723.0" style="-fx-background-color: #484848;" AnchorPane.bottomAnchor="118.0" AnchorPane.leftAnchor="304.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="156.0">
         <columns>
           <TableColumn prefWidth="63.0" />
-          <TableColumn id="songName" fx:id="songColumn" editable="false" minWidth="100.0" prefWidth="718.0" style="background: #002;" text="Track" />
+          <TableColumn id="songName" fx:id="songColumn" editable="false" minWidth="100.0" prefWidth="579.0" style="background: #002;" text="Track" />
+            <TableColumn fx:id="goToArtist" prefWidth="184.0" text="Go to Artist" />
         </columns>
       </TableView>
       <Label layoutX="332.0" layoutY="28.0" prefHeight="66.0" prefWidth="214.0" text="All songs">
