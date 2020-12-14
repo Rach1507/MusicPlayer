@@ -14,9 +14,10 @@ public class ArtistController {
 
 
     private static void setConnection() throws SQLException,ClassNotFoundException {
-        String url = "jdbc:mysql://localhost/MusicApp";
+        String url = "jdbc:mysql://localhost/musicapp";
         String uname = "root";
-        String pwd = "12Ccbu12!";
+        String pwd ="phani@123";
+       // String pwd = "12Ccbu12!";
         try {
             Class.forName("com.mysql.jdbc.Driver");
 

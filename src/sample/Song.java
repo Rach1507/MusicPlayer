@@ -11,12 +11,16 @@ public class Song {
     private StringProperty songName;
     private StringProperty artistName;
     private StringProperty albumName;
+    private StringProperty playlistName;
     //    private IntegerProperty duration;
     private JFXButton artist;
+
 
     public Song() {
         this.songName = new SimpleStringProperty();
         this.artistName = new SimpleStringProperty();
+        this.albumName=new SimpleStringProperty();
+        this.playlistName=new SimpleStringProperty();
         System.out.println(" song name "+songName);
     }
 
@@ -63,13 +67,19 @@ public class Song {
     }
 
     public void setAlbumName(String name) {
-        this.artistName.set(name);
+        this.albumName.set(name);
     }
 
 
     public String getAlbumName() {
-        return artistName.get();
+        return albumName.get();
 
+    }
+    public void setPlaylistName(String playlistName){
+        this.playlistName.set(playlistName);
+    }
+    public String getPlaylistName(){
+        return playlistName.get();
     }
 //
 //    public void setArtistBtn() {

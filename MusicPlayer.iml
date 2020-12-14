@@ -7,8 +7,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="library" level="project" />
-    <orderEntry type="library" name="jfoenix-9.0.10" level="project" />
-    <orderEntry type="library" name="jaco-mp3-player-0.9.3" level="project" />
+    <orderEntry type="library" exported="" name="jaco-mp3-player-0.9.3" level="project" />
+    <orderEntry type="library" exported="" name="lib" level="project" />
+    <orderEntry type="library" exported="" name="jfoenix-9.0.10" level="project" />
+    <orderEntry type="library" name="mysql-connector-java-5.1.49-bin" level="project" />
   </component>
 </module>

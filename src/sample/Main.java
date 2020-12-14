@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 
 public class Main extends Application{
@@ -15,6 +16,8 @@ public class Main extends Application{
         Parent root = FXMLLoader.load(getClass().getResource("home.fxml"));
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root, 500, 500));
+        //primaryStage.initStyle(StageStyle.UNDECORATED);
+        primaryStage.setMaximized(true);
         primaryStage.show();
     }
 
@@ -22,3 +25,8 @@ public class Main extends Application{
         launch(args);
     }
 }
+
+
+
+//master - f/a -> f/a- master
+//      - s/a -> master/f/a
