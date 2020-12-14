@@ -10,6 +10,7 @@ public class Artist {
     public Artist() {
 
         this.artistName = new SimpleStringProperty();
+        //testing
     }
 
     public String getArtistName() {

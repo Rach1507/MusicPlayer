@@ -17,6 +17,7 @@ public class Song {
     public Song() {
         this.songName = new SimpleStringProperty();
         this.artistName = new SimpleStringProperty();
+        System.out.println(" song name "+songName);
     }
 
 //    public void  setBtn() {
