@@ -2,17 +2,18 @@ package sample;
 
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXTextField;
 import jaco.mp3.player.MP3Player;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.Effect;
 import javafx.scene.effect.Shadow;
@@ -28,6 +29,8 @@ import javafx.util.Callback;
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
+
+import static java.lang.System.exit;
 
 public class Controller extends ActionEvent {
 
@@ -55,6 +58,32 @@ public class Controller extends ActionEvent {
     private JFXButton allArtists;
     @FXML
     private JFXButton allAlbums;
+    @FXML
+    private JFXButton closeBtn;
+
+    @FXML
+    private JFXTextField nowPlaying;
+
+    @FXML
+    private JFXTextField SRC;
+    @FXML
+    private JFXButton searchBtn;
+
+    @FXML
+    private JFXButton Favourites;
+
+    @FXML
+    private JFXButton recently_played;
+
+
+
+
+
+
+
+
+
+
    // @FXML
     private Image img=new Image("sample/icons/Add-icon.png");
     //@FXML
@@ -62,12 +91,12 @@ public class Controller extends ActionEvent {
 
     @FXML
    private void initialize() throws Exception {
+
         songColumn.setCellValueFactory(new PropertyValueFactory<Song,String>("songName"));
+//        TODO :@phani , update db and uncomment this line String query = "SELECT track_name,artist_name from track_artists";
         String query = "SELECT track_name from track";
         ObservableList<Song> songList = getallSongs(query);
         songTable.refresh();
-        ListView listView=new ListView<>();   //to enable scrolling option once the table is full(vertical scroll bar)
-        listView.getItems().add(songTable);
         songTable.setItems(songList);
         songColumn.setText("Track");
         goToArtist.setText("Go to Artist");
@@ -125,17 +154,6 @@ private void addSongToPlaylistBtn(){
                     btn.setGraphic(addIconOnBtn);
                     btn.setOnAction((ActionEvent event) -> {
                         //Song data = getTableView().getItems().get(getIndex());
-                      /*  Stage stagePopUp;
-                        stagePopUp=new Stage();
-                        try {
-                            Parent root= FXMLLoader.load(getClass().getResource("FXML2.fxml"));
-                            stagePopUp.setScene(new Scene(root));
-                            stagePopUp.initModality(Modality.APPLICATION_MODAL);
-                            stagePopUp.initOwner(btn.getScene().getWindow());
-                            stagePopUp.showAndWait();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }*/
                         System.out.println("hello there listener!");
                     });
                 }
@@ -227,13 +245,21 @@ private void addButtonToTable() {
 
     }
 
+
+    @FXML
+    private void Close(){
+//        closeBtn.setOnAction(a -> exit(0));
+        closeBtn.setOnAction(a -> Main.closPrgm());
+    }
+    @FXML
     public  void getArtistSongs() throws SQLException, ClassNotFoundException {
+
 
         Song curr_artist = songTable.getSelectionModel().getSelectedItem();
         String artist = curr_artist.getArtistName();
         System.out.println(curr_artist.getSongName());
         String songSelected=curr_artist.getSongName();
-        String query=String.format("SELECT track_name FROM track t WHERE t.track_id in (SELECT track_id FROM track_by tb WHERE  tb.artist_id=(SELECT artist_id FROM track_by tb WHERE tb.track_id=(SELECT track_id FROM track WHERE track_name=\"%s\")))",songSelected);
+       String query=String.format("SELECT track_name FROM track t WHERE t.track_id in (SELECT track_id FROM track_by tb WHERE  tb.artist_id=(SELECT artist_id FROM track_by tb WHERE tb.track_id=(SELECT track_id FROM track WHERE track_name=\"%s\")))",songSelected);
         //String query = String.format("%s=\"%s\";","SELECT track_name from track_artist where artist_name",artist);
         System.out.println(query);
         ObservableList<Song> artistSongs=getallSongs(query);
@@ -241,6 +267,52 @@ private void addButtonToTable() {
         songTable.setItems(artistSongs);
 
     }
+
+    @FXML
+    private void search() throws SQLException, ClassNotFoundException {
+
+        String song = SRC.getText();
+        String query = String.format("%s%s%s","SELECT track_name from track where track_name like '%",song,"%';");
+        System.out.println(query);
+        ObservableList<Song> artistSongs=getallSongs(query);
+        songTable.refresh();
+        songTable.setItems(artistSongs);
+    }
+
+    @FXML
+    private void addToFav() throws SQLException {
+        Song curr_song = songTable.getSelectionModel().getSelectedItem();
+        String song_name =curr_song.getSongName();
+
+        CallableStatement cstmt=connection. prepareCall("CALL addToFavs(?,?)");
+        cstmt.setString(1, song_name);
+        cstmt.setInt(2,1);      // @Phani TODO add user_id instead of 0
+        cstmt.executeUpdate();
+
+    }
+
+    @FXML
+    private void setFavourites() throws SQLException, ClassNotFoundException {
+        int user_id= 1;    // @Phani TODO add user_id instead of 0
+        String query = String.format("%s=%d","SELECT track_name from favourites where user_id",user_id);
+        ObservableList<Song> songList = getallSongs(query);
+        songTable.refresh();
+        songTable.setItems(songList);
+
+    }
+
+    @FXML
+    private void recentlyPlayed() throws SQLException, ClassNotFoundException {
+        int user_id= 1;    // @Phani TODO add user_id instead of 0
+        String query = String.format("%s=%d","SELECT track_name from recently_Played where user_id",user_id);
+        //TODO uncomment this
+//        String query = "SELECT track_name from recently_Played";
+        ObservableList<Song> songList = getallSongs(query);
+        songTable.refresh();
+        songTable.setItems(songList);
+
+    }
+
 
     public void getSongsOfAlbum() throws SQLException, ClassNotFoundException{
         songColumn.setCellValueFactory(new PropertyValueFactory<Song,String>("songName"));
@@ -317,17 +389,30 @@ private void addButtonToTable() {
         addSongToPlaylistCol.setVisible(false);
     }
 
-   // private String song_path="";
 
-private boolean playPause=true;
+
     public void play() throws SQLException, ClassNotFoundException {
 
-        //playPause=true;
         Song curr_song = songTable.getSelectionModel().getSelectedItem();
          String song = curr_song.getSongName();
 
+         nowPlaying.setText(song);
         String query = String.format("%s=\"%s\";","SELECT path_ from track where track_name",song);
         System.out.println(query);
+
+
+       // CallableStatement cstmt=connection. prepareCall("CALL noOfStreams(?)");
+       // cstmt.setString(1, song);
+       // cstmt.executeUpdate();
+        System.out.println("yes");
+//
+        //CallableStatement c=connection. prepareCall("CALL recently_played(?,?)");
+        //c.setString(1, song);
+        //c.setInt(2,1);      // @Phani TODO add user_id instead of 0
+       // c.executeUpdate();
+        System.out.println("yes");
+
+
         setConnection();
         PreparedStatement prepmnt= null;
         try {
@@ -340,25 +425,23 @@ private boolean playPause=true;
             while (rs.next()) {
                  String song_path = rs.getString("path_");
                 System.out.println(song_path);
-                MP3Player mp3Obj=new MP3Player(new File(song_path));
-                mp3Obj.play();
-
-
+                new MP3Player(new File(song_path)).play();
             }
 //
         } catch (SQLException ex) {
             System.err.println(ex.getMessage());
         }
-        playPause=false;
 
     }
 
 
 
     private static void setConnection() throws SQLException,ClassNotFoundException {
-        String url = "jdbc:mysql://localhost/musicapp";
+        String url = "jdbc:mysql://localhost/MusicApp";
         String uname = "root";
-        String pwd = "phani@123";
+        String pwd = "12Ccbu12!";
+       //String pwd = "phani@123";
+        //TODO:
         try {
             Class.forName("com.mysql.jdbc.Driver");
 
