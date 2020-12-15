@@ -92,7 +92,7 @@
                   </ImageView>
                </graphic>
             </JFXButton>
-            <JFXButton prefHeight="59.0" prefWidth="303.0" text="   Playlists">
+            <JFXButton onAction="#playlistInitialise" prefHeight="59.0" prefWidth="303.0" text="   Playlists">
                <font>
                   <Font size="19.0" />
                </font>
@@ -211,6 +211,7 @@
             </ImageView>
          </children>
       </AnchorPane>
+
       <TableView fx:id="songTable" layoutX="276.0" layoutY="169.0" prefHeight="450.0" prefWidth="870.0" style="-fx-background-color: #484848;" stylesheets="@../tablecss.css" AnchorPane.bottomAnchor="129.0" AnchorPane.leftAnchor="276.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="169.0">
         <columns>
           <TableColumn id="songName" fx:id="songColumn" editable="false" minWidth="100.0" prefWidth="512.0" style="background: #002;" text="Track" />

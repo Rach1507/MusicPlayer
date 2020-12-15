@@ -1,12 +1,19 @@
 package sample;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import sample.Song;
 
 import java.sql.*;
 
-public class AlbumController {
+public class PlaylistController {
+    String playlistName;
+    Date dateAdded;
 
+    private PlaylistController(){
+
+
+
+    }
     static Connection connection;
 
 
@@ -30,26 +37,25 @@ public class AlbumController {
 
 
 
-    private static ObservableList<Song> getAlbumObjects(ResultSet rs) {
+    private static ObservableList<Song> getPlaylistObjects(ResultSet rs) {
         try {
-            ObservableList<Song> albumData = FXCollections.observableArrayList();
+            ObservableList<Song> playlistData = FXCollections.observableArrayList();
             while (rs.next()) {
                 Song song = new Song();
-//                song.setArtistBtn();
-                song.setAlbumName(rs.getString("album_name"));
-                albumData.add(song);
+                song.setPlaylistName(rs.getString("playlist_name"));
+                playlistData.add(song);
             }
-            return albumData;
+            return playlistData;
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         return null;
     }
-    public static ObservableList<Song> getallAlbums() throws SQLException, ClassNotFoundException {
+    public static ObservableList<Song> getallPlaylists() throws SQLException, ClassNotFoundException {
 
         setConnection();
-        String query = "SELECT album_name from album;";
+        String query = "SELECT playlist_name from playlists;";
         PreparedStatement prepmnt= null;
         try {
             prepmnt = connection.prepareStatement(query);
@@ -57,8 +63,8 @@ public class AlbumController {
             ResultSet rs;
 
             rs = prepmnt.executeQuery(query);
-            ObservableList<Song> allAlbumData=getAlbumObjects(rs);
-            return allAlbumData;
+            ObservableList<Song> allPlaylistData=getPlaylistObjects(rs);
+            return allPlaylistData;
 
 //
         } catch (SQLException ex) {
@@ -67,7 +73,6 @@ public class AlbumController {
 
         return null;
     }
-
 
 
 }

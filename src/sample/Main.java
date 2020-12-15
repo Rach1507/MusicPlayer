@@ -22,7 +22,7 @@ public class Main extends Application{
         Parent root = FXMLLoader.load(getClass().getResource("home.fxml"));
         primaryStage.setTitle("Music player");
         primaryStage.setScene(new Scene(root, 1200, 800));
-        primaryStage.initStyle(StageStyle.UNDECORATED);
+        //primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.setMaximized(false);
 
         final double[] xOffset = new double[1];
