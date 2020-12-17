@@ -11,17 +11,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.effect.Effect;
-import javafx.scene.effect.Shadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.shape.CubicCurve;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -29,8 +26,6 @@ import javafx.util.Callback;
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
-
-import static java.lang.System.exit;
 
 public class Controller extends ActionEvent {
 
@@ -45,6 +40,10 @@ public class Controller extends ActionEvent {
     @FXML
     TableColumn<Song, Void> addSongToPlaylistCol = new TableColumn("Add To Playlist");
     private boolean isaddSongToPlaylistColSet=false;
+
+    @FXML
+    TableColumn<Song, Void> addToDeleteSongCol = new TableColumn("Remove From Playlist");
+    private boolean isaddToDeleteSongColSet=false;
 
     @FXML
     private  TableView<Song> songTable;
@@ -75,13 +74,31 @@ public class Controller extends ActionEvent {
     @FXML
     private JFXButton recently_played;
 
+    @FXML
+    private Label HiUserLabel;
 
 
+    @FXML
+    private JFXButton newPlaylistMainBtn;
+
+    @FXML
+    private JFXTextField newPlaylistTextField;
+
+    @FXML
+    private JFXButton disappearTextFieldBtn;
+
+    @FXML
+    private AnchorPane anchorpaneCreatePlaylist;
 
 
+    @FXML
+    private JFXButton okBtn;
 
 
+    public static int count=0;
 
+    public static String userEmailid;
+    public static String userName;
 
 
    // @FXML
@@ -89,8 +106,51 @@ public class Controller extends ActionEvent {
     //@FXML
     //private ImageView addIconOnBtn=new ImageView(img);
 
+    public static  void initData(String string){
+
+        System.out.println(string+" this is the username got from the login screen");
+        userEmailid=string;
+
+
+
+    }
+
     @FXML
    private void initialize() throws Exception {
+
+
+              /* if(count<1){
+        try {
+            FXMLLoader loader=new FXMLLoader();
+            loader.setLocation(getClass().getResource("loginScreen.fxml"));
+            Parent root1=loader.load();
+            //Parent root1= FXMLLoader.load(getClass().getResource("playlistLoader.fxml"));
+            Scene newScene=new Scene(root1);
+            //Stage window=(Stage)((Node)btn).getScene().getWindow();
+            loginController controller =loader.getController();
+           // controller.initData(songTable.getSelectionModel().getSelectedItem());
+            count++;
+
+            Stage window=new Stage();
+            window.setScene(newScene);
+            window.initModality(Modality.APPLICATION_MODAL);
+            window.initOwner(Main.window);
+            window.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }}
+
+
+
+               setConnection();
+               String queryToGetUserName="SELECT user_name FROM users WHERE email_id=?";
+               PreparedStatement statement=connection.prepareStatement(queryToGetUserName);
+               statement.setString(1,userEmailid);
+               ResultSet rs=statement.executeQuery();
+               rs.next();
+               userName=rs.getString(1);
+               HiUserLabel.setText("Hullow "+userName+" !");*/
 
         songColumn.setCellValueFactory(new PropertyValueFactory<Song,String>("songName"));
 //        TODO :@phani , update db and uncomment this line String query = "SELECT track_name,artist_name from track_artists";
@@ -104,6 +164,8 @@ public class Controller extends ActionEvent {
         addButtonToTable();
         addSongToPlaylistBtn();
         addSongToPlaylistCol.setVisible(true); //this column should be visible only when thw tracks are displayed
+        addDeleteSongInPlaylistButtonToTable();
+        addToDeleteSongCol.setVisible(false);
 
         //goToArtist.setCellValueFactory(new PropertyValueFactory<Song,JFXButton>("btn"));
         //ObservableList<Song> btnList=
@@ -119,31 +181,7 @@ private void addSongToPlaylistBtn(){
         public TableCell<Song, Void> call(final TableColumn<Song, Void> param) {
             final TableCell<Song, Void> cell = new TableCell<Song, Void>() {
 
-               /* @FXML
-                private ImageView btn=new ImageView(img);{
-                    /*btn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-                        System.out.println("Helo there listener ! ");
-                        event.consume();
-                    });
-                    btn.setOnMousePressed((MouseEvent event) -> {
-                        //btn.setImage(null);
-                        System.out.println("Helo there listener ! ");
-                    });*/
 
-                    // btn.setOnMouseClickedaddListener((v,oldValue,newValue)->{
-                   /* btn.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-
-                        @Override
-                        public void handle(MouseEvent mouseEvent) {
-                            System.out.println("Helo there listener ! ");
-                        }
-                    });*/
-
-
-                   // });
-
-                //}
                 private ImageView addIconOnBtn=new ImageView(new Image("sample/icons/Add-icon.png"));
 
 
@@ -153,7 +191,25 @@ private void addSongToPlaylistBtn(){
 
                     btn.setGraphic(addIconOnBtn);
                     btn.setOnAction((ActionEvent event) -> {
-                        //Song data = getTableView().getItems().get(getIndex());
+                        try {
+                             FXMLLoader loader=new FXMLLoader();
+                             loader.setLocation(getClass().getResource("playlistLoader.fxml"));
+                             Parent root1=loader.load();
+                            //Parent root1= FXMLLoader.load(getClass().getResource("playlistLoader.fxml"));
+                            Scene newScene=new Scene(root1);
+                            //Stage window=(Stage)((Node)btn).getScene().getWindow();
+                            PlaylistLoader controller =loader.getController();
+                            controller.initData(songTable.getSelectionModel().getSelectedItem());
+
+                            Stage window=new Stage();
+                            window.setScene(newScene);
+                           window.initModality(Modality.APPLICATION_MODAL);
+                            window.initOwner(btn.getScene().getWindow());
+                            window.showAndWait();
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         System.out.println("hello there listener!");
                     });
                 }
@@ -208,12 +264,24 @@ private void addButtonToTable() {
                         btn.setOnAction((ActionEvent event) -> {
                             Song data = getTableView().getItems().get(getIndex());
                             try {
-                                if(goToArtist.getText().equals("Go to Artist"))
-                                getArtistSongs();
+                                if(goToArtist.getText().equals("Go to Artist")) {
+                                    getArtistSongs();
+                                   // addToDeleteSongCol.setVisible(true);
+                                }
                                 else if(goToArtist.getText().equals("Go to Album")){
                                     getSongsOfAlbum();
+                                    goToArtist.setVisible(false);
                                     addSongToPlaylistCol.setVisible(true);
-
+                                    //addToDeleteSongCol.setVisible(true);
+                                }
+                                else if(goToArtist.getText().equals("Go to Playlist")){
+                                    getSongsInPlaylist();
+                                    addSongToPlaylistCol.setVisible(false);
+                                    addToDeleteSongCol.setVisible(true);
+                                }
+                                else if(goToArtist.getText().equals("Show Profile")){
+                                    getAllSongsOfArtist();
+                                   // addToDeleteSongCol.setVisible(true);
                                 }
                             } catch (SQLException throwables) {
                                 throwables.printStackTrace();
@@ -242,6 +310,166 @@ private void addButtonToTable() {
     goToArtist.setCellFactory(cellFactory);
 
         //songTable.getColumns().add(goToArtist);
+
+    }
+
+    private void addDeleteSongInPlaylistButtonToTable() {
+        //  TableColumn<Song, Void> colBtn = new TableColumn("Button column");
+
+        Callback<TableColumn<Song, Void>, TableCell<Song, Void>> cellFactory = new Callback<TableColumn<Song, Void>, TableCell<Song, Void>>() {
+            @Override
+            public TableCell<Song, Void> call(final TableColumn<Song, Void> param) {
+                final TableCell<Song, Void> cell = new TableCell<Song, Void>() {
+                    // @FXML
+
+                    //@FXML
+
+                    //private ImageView addIconOnBtn1=new ImageView(new Image("sample/icons/go-icon1.png"));
+                    private ImageView addIconOnBtn2=new ImageView(new Image("sample/icons/Delete-icon.png"));
+
+                    @FXML
+                    private JFXButton btn = new JFXButton("");
+
+                    {
+
+
+                        //if(goToArtist.getText().equals("Show Profile"))
+                        //btn.setGraphic(addIconOnBtn2);  //to add the artist icon o a button
+                        //else
+                        btn.setGraphic(addIconOnBtn2); //to add goto icon on a button
+
+                        btn.setOnAction((ActionEvent event) -> {
+                            Song data = getTableView().getItems().get(getIndex());
+                            int trackId=999;
+                            int playlistId=999;
+                            try {
+                                setConnection();
+                            } catch (SQLException throwables) {
+                                throwables.printStackTrace();
+                            } catch (ClassNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                            String trackName=songTable.getSelectionModel().getSelectedItem().getSongName();
+                            String query1="SELECT track_id FROM track WHERE track_name=?";
+                            try {
+                                PreparedStatement statement1=connection.prepareStatement(query1);
+                                statement1.setString(1,trackName);
+                                ResultSet rs=statement1.executeQuery();
+                                rs.next();
+                                trackId=rs.getInt(1);
+                            } catch (SQLException throwables) {
+                                throwables.printStackTrace();
+                            }
+
+                            String query2="SELECT playlist_id from p_contains WHERE track_id=?";
+                            try {
+                                PreparedStatement statement2=connection.prepareStatement(query2);
+                                statement2.setInt(1,trackId);
+                                ResultSet rs=statement2.executeQuery();
+                                rs.next();
+                                playlistId=rs.getInt(1);
+
+                            } catch (SQLException throwables) {
+                                throwables.printStackTrace();
+                            }
+
+                            String query3="DELETE FROM p_contains WHERE track_id=?";
+                            try {
+                                PreparedStatement statement3=connection.prepareStatement(query3);
+                                statement3.setInt(1,trackId);
+                                int rowsAffected=statement3.executeUpdate();
+                                System.out.println("The rows deleted are "+ rowsAffected);
+                                //new Controller.playlistInitialise();
+                                songColumn.setCellValueFactory(new PropertyValueFactory<>("playlistName"));
+                                ObservableList<Song> albumList = PlaylistController.getallPlaylists();
+                                songTable.setItems(albumList);
+                                songColumn.setText("Your Playlists");
+                                goToArtist.setText("Go to Playlist");
+                                goToArtist.setVisible(true);
+                                addSongToPlaylistCol.setVisible(false);
+                                addToDeleteSongCol.setVisible(false);
+
+                            } catch (SQLException | ClassNotFoundException throwables) {
+                                throwables.printStackTrace();
+                            }
+
+
+                            // System.out.println("selectedData: " + data);
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+
+        addToDeleteSongCol.setCellFactory(cellFactory);
+        if(!isaddToDeleteSongColSet) {
+            songTable.getColumns().add(addToDeleteSongCol);
+            isaddToDeleteSongColSet=true;
+        }
+
+
+        //songTable.getColumns().add(goToArtist);
+
+    }
+
+
+    public void getAllSongsOfArtist() throws SQLException, ClassNotFoundException {
+        Song playlistSelected=songTable.getSelectionModel().getSelectedItem();
+        String artistName=playlistSelected.getArtistName();
+        String query1="SELECT artist_id FROM artist WHERE artist_name=?";
+        PreparedStatement statement1=connection.prepareStatement(query1);
+        statement1.setString(1,artistName);
+        ResultSet rs1=statement1.executeQuery();
+        rs1.next();
+        int artistId=Integer.parseInt(rs1.getString(1));
+
+        String query=String.format("SELECT track_name FROM track t INNER JOIN track_by tb ON t.track_id=tb.track_id AND tb.artist_id=\"%s\"",artistId);
+
+        ObservableList<Song> allSongsOfArtist=getallSongs(query);
+        //songTable.refresh();
+        songColumn.setCellValueFactory(new PropertyValueFactory<Song,String>("songName"));
+        songTable.setItems(allSongsOfArtist);
+        goToArtist.setVisible(false);
+        addButtonToTable();
+        addSongToPlaylistBtn();
+        addSongToPlaylistCol.setVisible(true);
+
+    }
+
+    public void getSongsInPlaylist() throws SQLException, ClassNotFoundException {
+        Song playlistSelected=songTable.getSelectionModel().getSelectedItem();
+        String playlist=playlistSelected.getPlaylistName();
+        String query1="SELECT playlist_id FROM playlists WHERE playlist_name=?";
+
+        PreparedStatement statement1 = connection.prepareStatement(query1);
+        statement1.setString(1, playlist);
+        ResultSet rs1=statement1.executeQuery();
+        rs1.next();
+        System.out.println(rs1.getString(1)+" playlist_id retreived");
+        int playlistId=Integer.parseInt(rs1.getString(1));
+
+        String query=String.format("SELECT track_name FROM track t INNER JOIN p_contains p ON t.track_id=p.track_id AND p.playlist_id=\"%s\"",playlistId);
+        ObservableList<Song> playlistSongs=getallSongs(query);
+        //songTable.refresh();
+        songColumn.setCellValueFactory(new PropertyValueFactory<Song,String>("songName"));
+        songTable.setItems(playlistSongs);
+        goToArtist.setVisible(false);
+        addButtonToTable();
+        addSongToPlaylistBtn();
+        addSongToPlaylistCol.setVisible(true);
+      //  songColumn.setText("Track");
+        //goToArtist.setText("Go to Artist");
 
     }
 
@@ -337,6 +565,7 @@ private void addButtonToTable() {
         goToArtist.setText("Show Profile");
         goToArtist.setVisible(true);
         addSongToPlaylistCol.setVisible(false);
+        addToDeleteSongCol.setVisible(false);
 
 
 //
@@ -375,6 +604,7 @@ private void addButtonToTable() {
         goToArtist.setText("Go to Album");
         goToArtist.setVisible(true);
         addSongToPlaylistCol.setVisible(false);
+        addToDeleteSongCol.setVisible(false);
 
     }
 
@@ -387,6 +617,7 @@ private void addButtonToTable() {
         goToArtist.setText("Go to Playlist");
         goToArtist.setVisible(true);
         addSongToPlaylistCol.setVisible(false);
+        addToDeleteSongCol.setVisible(false);
     }
 
 
@@ -401,15 +632,15 @@ private void addButtonToTable() {
         System.out.println(query);
 
 
-       // CallableStatement cstmt=connection. prepareCall("CALL noOfStreams(?)");
-       // cstmt.setString(1, song);
-       // cstmt.executeUpdate();
+       CallableStatement cstmt=connection. prepareCall("CALL noOfStreams(?)");
+        cstmt.setString(1, song);//noOfStreams
+        cstmt.executeUpdate();
         System.out.println("yes");
 //
-        //CallableStatement c=connection. prepareCall("CALL recently_played(?,?)");
-        //c.setString(1, song);
-        //c.setInt(2,1);      // @Phani TODO add user_id instead of 0
-       // c.executeUpdate();
+        CallableStatement c=connection. prepareCall("CALL recently_played(?,?)");
+        c.setString(1, song);
+        c.setInt(2,1);      // @Phani TODO add user_id instead of 0
+        c.executeUpdate();
         System.out.println("yes");
 
 
@@ -439,8 +670,8 @@ private void addButtonToTable() {
     private static void setConnection() throws SQLException,ClassNotFoundException {
         String url = "jdbc:mysql://localhost/MusicApp";
         String uname = "root";
-        String pwd = "12Ccbu12!";
-       //String pwd = "phani@123";
+        //String pwd = "12Ccbu12!";
+       String pwd = "phani@123";
         //TODO:
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -494,6 +725,44 @@ private void addButtonToTable() {
             throwables.printStackTrace();
         }
     return null;
+    }
+
+    @FXML
+    public void CreateNewPlaylist(){                  //this method is called when New Playlist Button is clicked on the main screen.
+        anchorpaneCreatePlaylist.setVisible(true);
+
+
+    }
+
+
+    @FXML
+    public void okBtnActionHandler() throws SQLException, ClassNotFoundException {
+
+        String newPlaylistName=newPlaylistTextField.getText();
+        long d = System.currentTimeMillis();
+        Date datee = new Date(d);
+
+        int userId=1; //TODO after integrating login part ,this user id must be of the user who has logged in
+
+        String query="INSERT INTO playlists(user_id,playlist_name,date_added) VALUES(?,?,?)";
+
+
+        setConnection();
+        PreparedStatement statement1=connection.prepareStatement(query);
+        statement1.setInt(1,userId);
+        statement1.setString(2,newPlaylistName);
+        statement1.setString(3, String.valueOf(datee));
+
+        statement1.executeUpdate();
+        anchorpaneCreatePlaylist.setVisible(false);
+
+
+    }
+
+
+    @FXML
+    public void disappearAnchorPane(){
+        anchorpaneCreatePlaylist.setVisible(false);
     }
 
 
