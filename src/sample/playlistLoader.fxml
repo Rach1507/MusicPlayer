@@ -16,7 +16,6 @@
 <?import javafx.scene.paint.Stop?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane prefHeight="392.0" prefWidth="208.0" style="-fx-background-color: #484848;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.PlaylistLoader">
    <children>
       <JFXListView fx:id="lst1" layoutX="4.0" layoutY="22.0" prefHeight="274.0" prefWidth="200.0" style="-fx-background-color: #000000;" />
@@ -25,8 +24,8 @@
           <TableColumn fx:id="playlistColumn" prefWidth="196.800048828125" text="Playlists" />
         </columns>
       </TableView>
-      <JFXButton fx:id="cancelBtn" layoutX="176.0" layoutY="1.0" prefHeight="26.0" prefWidth="29.0" text=" " />
-      <ImageView fitHeight="13.0" fitWidth="13.0" layoutX="190.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true">
+      <JFXButton fx:id="cancelBtn" layoutX="176.0" layoutY="1.0" onAction="#quitMethod" prefHeight="26.0" prefWidth="29.0" text=" " />
+      <ImageView fitHeight="13.0" fitWidth="13.0" layoutX="190.0" layoutY="7.0" onMouseClicked="#quitMethod" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@icons/close-icon.png" />
          </image>

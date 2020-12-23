@@ -11,13 +11,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
 import java.sql.*;
 
 public class PlaylistLoader extends ActionEvent {
 
     private static Connection connection;
+
 
     @FXML
     private Label lbl1;
@@ -28,7 +31,7 @@ public class PlaylistLoader extends ActionEvent {
     private TableView<Song> playlistTable;
 
     @FXML
-    private TableColumn<Song, String> playlistColumn;
+    private  TableColumn<Song, String> playlistColumn;
 
     @FXML
     private JFXButton cancelBtn;
@@ -46,10 +49,12 @@ public class PlaylistLoader extends ActionEvent {
     private JFXTextField textField;
 
     public String songName;
+    public static int userId;
 
-    public void initData(Song song){
+    public void initData(Song song,int userid){
         songName=song.getSongName();
-
+        userId=userid;   //userId fetched from the main screen
+        System.out.println("test 3 user id "+userId);
 
     }
 
@@ -62,18 +67,16 @@ public class PlaylistLoader extends ActionEvent {
     @FXML
     private void initialize() throws SQLException, ClassNotFoundException {
 
-        playlistColumn.setCellValueFactory(new PropertyValueFactory<Song,String>("playlistName"));
+       playlistColumn.setCellValueFactory(new PropertyValueFactory<Song,String>("playlistName"));
         ObservableList<Song> playlistData = FXCollections.observableArrayList();
         playlistData=getallPlaylists();
-
         playlistTable.refresh();
         playlistTable.setItems(playlistData);
-               // lst1.setItems((ObservableList<Song>) playlistTable);
 
     }
 
     private static void setConnection() throws SQLException,ClassNotFoundException {
-        String url = "jdbc:mysql://localhost/musicapp";
+        String url = "jdbc:mysql://localhost/musicplayer";
         String uname = "root";
         String pwd = "phani@123";
         //String pwd = "12Ccbu12!";
@@ -91,17 +94,18 @@ public class PlaylistLoader extends ActionEvent {
     public static ObservableList<Song> getallPlaylists() throws SQLException, ClassNotFoundException {
 
         setConnection();
-        String query = "SELECT playlist_name from playlists;";
+        String query = String.format("SELECT playlist_name FROM playlists WHERE user_id=%d",Controller.userId);
+        System.out.println(query);
+        System.out.println("test userid "+userId);
         PreparedStatement prepmnt= null;
         try {
-            prepmnt = connection.prepareStatement(query);
 
+            prepmnt = connection.prepareStatement(query);
             ResultSet rs;
 
             rs = prepmnt.executeQuery(query);
             ObservableList<Song> allPlaylistData=getPlaylistObjects(rs);
             return allPlaylistData;
-
 
         } catch (SQLException ex) {
             System.err.println(ex.getMessage());
@@ -128,44 +132,28 @@ public class PlaylistLoader extends ActionEvent {
 
     @FXML
     private void createNewPlaylist(){
-
         doneBtn.setText("Create");
         hbox.setVisible(true);
-
-
-
-
-
-
     }
     @FXML
     private void doneMethod() throws SQLException, ClassNotFoundException {
         setConnection();
         if(doneBtn.getText().equals("Create")){
             String newPlaylist=textField.getText();
-            int userid=1; //TODO after integrating login part ,this user id must be of the user who has logged in
             long d = System.currentTimeMillis();
             Date datee = new Date(d);
             System.out.println(datee);
-            //String query=String.format("SELECT track_name FROM track t WHERE t.album_id in (SELECT album_id FROM album a where album_name=\"%s\");",album);
-            //String query=String.format("INSERT INTO playlists(user_id,playlist_name,date_added)"+" values(1,?,?");
-            String query="INSERT INTO playlists(user_id,playlist_name,date_added)"+" values(?,?,?);";
+            String query=String.format("INSERT INTO playlists(user_id,playlist_name,date_added)"+" values(\"%d\",\"%s\",\"%s\")",Controller.userId,newPlaylist,String.valueOf(datee));
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setInt(1, userid);
-            statement.setString(2, newPlaylist);
-            statement.setString(3, String.valueOf(datee));
             statement.executeUpdate();
-
-
+            Stage stage= (Stage) doneBtn.getScene().getWindow();
+            stage.close();
         }else{
             Song curr_playlist = playlistTable.getSelectionModel().getSelectedItem();
             String playlistString=curr_playlist.getPlaylistName();
             System.out.println(playlistString);
-            //String query1=String.format("SELECT playlist_id FROM playlists WHERE playlist_name=?",playlistString);
-            String query1="SELECT playlist_id FROM playlists WHERE playlist_name=?";
-
+            String query1=String.format("SELECT playlist_id FROM playlists WHERE playlist_name=\"%s\" AND user_id=\"%d\"",playlistString,Controller.userId);
             PreparedStatement statement1 = connection.prepareStatement(query1);
-            statement1.setString(1, playlistString);
             ResultSet rs1=statement1.executeQuery();
             rs1.next();
             System.out.println(rs1.getString(1)+" playlist_id retreived");
@@ -179,36 +167,22 @@ public class PlaylistLoader extends ActionEvent {
             rs2.next();
             System.out.println(rs2.getString(1)+" track_id retreived");
             int trackId=Integer.parseInt(rs2.getString(1));
+            String insertIntoPcontainsTable=String.format("INSERT INTO p_contains VALUES(%d,%d,%d)",trackId,playlistId,Controller.userId);
 
-            int userId=1;//TODO after integrating login part ,this user id must be of the user who has logged in
-
-        String insertIntoPcontainsTable="INSERT INTO p_contains VALUES(?,?,?)";
             PreparedStatement statement3 = connection.prepareStatement(insertIntoPcontainsTable);
-            statement3.setInt(1,trackId);
-            statement3.setInt(2,playlistId);
-            statement3.setInt(3,userId);
            int affectedRows= statement3.executeUpdate();
            System.out.println("Affected rows are "+affectedRows);
 
-
-
-
-
-           // int trackId=
-
-
-
-
-
-
-
+            Stage stage= (Stage) doneBtn.getScene().getWindow();
+            stage.close();
         }
-
-
     }
 
     @FXML
     private void quitMethod(){
+
+        Stage stage= (Stage) doneBtn.getScene().getWindow();
+        stage.close();
 
     }
 
