@@ -4,40 +4,32 @@ import com.jfoenix.controls.JFXButton;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-import java.sql.SQLException;
-
 public class Song {
 
     private StringProperty songName;
     private StringProperty artistName;
     private StringProperty albumName;
     private StringProperty playlistName;
-    //    private IntegerProperty duration;
+    private StringProperty noOfStreams;
     private JFXButton artist;
 
+
+    public String getNoOfStreams() {
+        return noOfStreams.get();
+    }
+
+    public void setNoOfStreams(String noOfStreams) {
+        this.noOfStreams.set(noOfStreams);
+    }
 
     public Song() {
         this.songName = new SimpleStringProperty();
         this.artistName = new SimpleStringProperty();
-        this.albumName=new SimpleStringProperty();
-        this.playlistName=new SimpleStringProperty();
-        System.out.println(" song name "+songName);
+        this.albumName = new SimpleStringProperty();
+        this.playlistName = new SimpleStringProperty();
+        this.noOfStreams=new SimpleStringProperty();
+        System.out.println(" song name " + songName);
     }
-
-//    public void  setBtn() {
-//        this.artist = new JFXButton("Go to artist");
-//        artist.setVisible(true);
-//        artist.setOnAction(e-> {
-//            try {
-//                new Controller().getArtistSongs();
-//            } catch (SQLException throwables) {
-//                throwables.printStackTrace();
-//            } catch (ClassNotFoundException classNotFoundException) {
-//                classNotFoundException.printStackTrace();
-//            }
-//        });
-//
-//    }
 
 
     public String getSongName() {
@@ -75,26 +67,13 @@ public class Song {
         return albumName.get();
 
     }
-    public void setPlaylistName(String playlistName){
+
+    public void setPlaylistName(String playlistName) {
         this.playlistName.set(playlistName);
     }
-    public String getPlaylistName(){
+
+    public String getPlaylistName() {
         return playlistName.get();
     }
-//
-//    public void setArtistBtn() {
-//        this.artist = new JFXButton("Go to album");
-//        artist.setVisible(true);
-//        artist.setOnAction(e-> {
-//            try {
-//                new Controller().getArtistSongs();
-//            } catch (SQLException throwables) {
-//                throwables.printStackTrace();
-//            } catch (ClassNotFoundException classNotFoundException) {
-//                classNotFoundException.printStackTrace();
-//            }
-//        });
-//
-//    }
-//}
+
 }

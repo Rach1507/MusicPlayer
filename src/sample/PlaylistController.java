@@ -10,9 +10,7 @@ public class PlaylistController {
     Date dateAdded;
 
     private PlaylistController(){
-
-
-
+        //empty constructor
     }
     static Connection connection;
 
@@ -20,7 +18,7 @@ public class PlaylistController {
 
 
     private static void setConnection() throws SQLException,ClassNotFoundException {
-        String url = "jdbc:mysql://localhost/musicapp";
+        String url = "jdbc:mysql://localhost/musicplayer";
         String uname = "root";
         String pwd = "phani@123";
         //String pwd = "12Ccbu12!";
@@ -43,6 +41,8 @@ public class PlaylistController {
             while (rs.next()) {
                 Song song = new Song();
                 song.setPlaylistName(rs.getString("playlist_name"));
+                String not=rs.getInt("no_of_tracks")+"";
+                song.setNoOfStreams(not);
                 playlistData.add(song);
             }
             return playlistData;
@@ -52,13 +52,16 @@ public class PlaylistController {
         }
         return null;
     }
-    public static ObservableList<Song> getallPlaylists() throws SQLException, ClassNotFoundException {
+    public static ObservableList<Song> getallPlaylists(int userid) throws SQLException, ClassNotFoundException {
 
         setConnection();
-        String query = "SELECT playlist_name from playlists;";
-        PreparedStatement prepmnt= null;
+
+
         try {
-            prepmnt = connection.prepareStatement(query);
+            String query =String.format("SELECT playlist_name,no_of_tracks FROM playlists p WHERE user_id=%d",userid);
+
+            System.out.println(query);
+            PreparedStatement prepmnt= connection.prepareStatement(query);
 
             ResultSet rs;
 
@@ -66,7 +69,6 @@ public class PlaylistController {
             ObservableList<Song> allPlaylistData=getPlaylistObjects(rs);
             return allPlaylistData;
 
-//
         } catch (SQLException ex) {
             System.err.println(ex.getMessage());
         }

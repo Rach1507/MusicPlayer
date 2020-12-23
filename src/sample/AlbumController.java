@@ -9,11 +9,8 @@ public class AlbumController {
 
     static Connection connection;
 
-
-
-
     private static void setConnection() throws SQLException,ClassNotFoundException {
-        String url = "jdbc:mysql://localhost/musicapp";
+        String url = "jdbc:mysql://localhost/musicplayer";
         String uname = "root";
         String pwd = "phani@123";
         //String pwd = "12Ccbu12!";
@@ -53,14 +50,12 @@ public class AlbumController {
         PreparedStatement prepmnt= null;
         try {
             prepmnt = connection.prepareStatement(query);
-
             ResultSet rs;
-
             rs = prepmnt.executeQuery(query);
+
             ObservableList<Song> allAlbumData=getAlbumObjects(rs);
             return allAlbumData;
 
-//
         } catch (SQLException ex) {
             System.err.println(ex.getMessage());
         }

@@ -14,7 +14,7 @@ public class ArtistController {
 
 
     private static void setConnection() throws SQLException,ClassNotFoundException {
-        String url = "jdbc:mysql://localhost/musicapp";
+        String url = "jdbc:mysql://localhost/musicplayer";
         String uname = "root";
         String pwd ="phani@123";
         //String pwd = "12Ccbu12!";
@@ -36,7 +36,6 @@ public class ArtistController {
             ObservableList<Song> artistData = FXCollections.observableArrayList();
             while (rs.next()) {
                 Song song = new Song();
-//                song.setBtn();
                 song.setArtistName(rs.getString("artist_name"));
                 artistData.add(song);
             }
@@ -61,7 +60,6 @@ public class ArtistController {
                 ObservableList<Song> allArtistData=getArtistObjects(rs);
                 return allArtistData;
 
-//
             } catch (SQLException ex) {
                 System.err.println(ex.getMessage());
             }
