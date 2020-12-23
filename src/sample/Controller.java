@@ -677,7 +677,7 @@ private void addButtonToTable() {
     @FXML
     private void recentlyPlayed() throws SQLException, ClassNotFoundException {
         songColumn.setCellValueFactory(new PropertyValueFactory<Song,String>("songName"));
-        String query = String.format("SELECT track_name FROM track WHERE track_id in (SELECT track_id  from recently_Played where user_id=\"%d\" order by date_played desc)",userId);//"%s=%d",
+        String query = String.format("SELECT track_name FROM track WHERE track_id in (SELECT track_id  from recently_Played where user_id=\"%d\" order by date_played)",userId);//"%s=%d",
         String query1="";
 
         ObservableList<Song> songList = getallSongs(query);
@@ -782,16 +782,17 @@ private void addButtonToTable() {
         rs.next();
         int trackId=rs.getInt(1);
 
-        String CheckPesenceOfSongInRecentlyPlayed=String.format("SELECT track_id FROM recently_played WHERE track_id=\"%d\"",trackId);
+        String CheckPesenceOfSongInRecentlyPlayed=String.format("SELECT track_id FROM recently_played WHERE track_id=\"%d\" AND user_id=\"%d\"",trackId,userId);
         PreparedStatement pst=connection.prepareStatement(CheckPesenceOfSongInRecentlyPlayed);
         ResultSet rss=pst.executeQuery();
        // rss.next();
         //!rss.getString(1).equals("")
-        if(!rss.next()) {
+       if(!rss.next()) {
 
             CallableStatement c = connection.prepareCall("CALL recently_played(?,?,?)");
             c.setInt(1, trackId);
             c.setInt(2, userId);   // @Phani TODO add user_id instead of 0
+            //c.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
             c.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
             c.executeUpdate();
         }
