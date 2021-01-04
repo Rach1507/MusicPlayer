@@ -215,7 +215,7 @@
             </JFXTextField>
             <JFXButton layoutX="467.0" layoutY="80.0" text="   ">
                <graphic>
-                  <ImageView fitHeight="29.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="forwardBtn" fitHeight="29.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true" visible="false">
                      <image>
                         <Image url="@icons/baseline_skip_next_white_18dp.png" />
                      </image>
@@ -224,7 +224,7 @@
             </JFXButton>
             <JFXButton layoutX="254.0" layoutY="79.0" text="  ">
                <graphic>
-                  <ImageView fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="backwardBtn" fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true" visible="false">
                      <image>
                         <Image url="@icons/baseline_skip_previous_white_18dp.png" />
                      </image>
@@ -319,6 +319,7 @@
             </RadialGradient>
          </textFill>
       </Label>
+      <JFXButton fx:id="clrRecent" layoutX="291.0" layoutY="150.0" onAction="#clearRecentlyPlayed" prefHeight="26.0" prefWidth="141.0" style="-fx-background-color: #1a1c20;" text="Clear recently played" textFill="WHITE" />
    </children>
    <padding>
       <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
