@@ -11,14 +11,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -140,6 +140,9 @@ public class Controller extends ActionEvent {
     @FXML
     private JFXButton trandingBtn;
 
+    @FXML
+    private JFXButton clrRecent;
+
     private static boolean isCredentialsCorrect=false;
 
 
@@ -202,6 +205,7 @@ public class Controller extends ActionEvent {
        //addNoOfTracksToPlaylist();
 
         addNoOfTracksCol.setVisible(false);
+        clrRecent.setVisible(false);
 
 }
 
@@ -527,15 +531,40 @@ private void addButtonToTable() {
                             try {
                            // if(result.equals("")){
                                 setConnection();
+
+
                                 String query=String.format("SELECT track_id FROM track WHERE track_name=\"%s\"",song);
                                 PreparedStatement pst=connection.prepareStatement(query);
                                 ResultSet rs=pst.executeQuery();
                                 rs.next();
                                 int trackId=rs.getInt(1);
-                               CallableStatement  c=connection. prepareCall("CALL addToFavs(?,?)");
-                               c.setInt(1,trackId);
-                               c.setInt(2,userId);
-                               c.executeUpdate();
+                                String toCheckIfExists=String.format("SELECT track_id FROM favourites WHERE track_id=\"%d\" AND user_id=\"%d\"",trackId,userId);
+                                PreparedStatement pst1=connection.prepareStatement(toCheckIfExists);
+                                ResultSet rs1=pst1.executeQuery();
+                              //  rs1.next();
+                                if(rs1.next()){
+                                    System.out.println("Already in playlist");
+                                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                    alert.initStyle(StageStyle.UTILITY);
+                                    alert.setTitle("");
+                                    alert.setHeaderText(null);
+                                    alert.setContentText(song+" already addded to favourites.");
+                                    alert.showAndWait();
+                                }else {
+
+
+                                    CallableStatement c = connection.prepareCall("CALL addToFavs(?,?)");
+                                    c.setInt(1, trackId);
+                                    c.setInt(2, userId);
+                                    c.executeUpdate();
+
+                                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                    alert.initStyle(StageStyle.UTILITY);
+                                    alert.setTitle("");
+                                    alert.setHeaderText(null);
+                                    alert.setContentText(song + " added to favorites.");
+                                    alert.showAndWait();
+                                }
                             }
                            // else{
                             //    JOptionPane.showMessageDialog(null,"Song already in favorites");
@@ -612,6 +641,7 @@ private void addButtonToTable() {
         addButtonToTable();
         addSongToPlaylistBtn();
         addSongToPlaylistCol.setVisible(true);
+        addNoOfTracksCol.setVisible(false);
 
     }
 
@@ -645,6 +675,7 @@ private void addButtonToTable() {
         ObservableList<Song> artistSongs=getallSongs(query);
         songTable.refresh();
         songTable.setItems(artistSongs);
+
     }
 
     @FXML
@@ -656,7 +687,7 @@ private void addButtonToTable() {
         cstmt.setString(1, song_name);
         cstmt.setInt(2,userId);
         cstmt.executeUpdate();
-
+//bye
     }
 
     @FXML
@@ -671,6 +702,9 @@ private void addButtonToTable() {
         topLabel.setText("Your Favorites");
         songColumn.setText("Albums");
         addNoOfTracksCol.setVisible(false);
+        addToDeleteSongCol.setVisible(false);
+        goToArtist.setVisible(false);
+        addSongToPlaylistCol.setVisible(true);
 
     }
 
@@ -690,6 +724,7 @@ private void addButtonToTable() {
         topLabel.setText("Recently Played");
         songColumn.setText("Track");
         addNoOfTracksCol.setVisible(false);
+        clrRecent.setVisible(true);
     }
 
 
@@ -720,6 +755,7 @@ private void addButtonToTable() {
         addToFavotiteCol.setVisible(false);
         topLabel.setText("Artists");
         addNoOfTracksCol.setVisible(false);
+        clrRecent.setVisible(false);
 
     }
 
@@ -737,6 +773,7 @@ private void addButtonToTable() {
         addToFavotiteCol.setVisible(false);
         topLabel.setText("Albums");
         addNoOfTracksCol.setVisible(false);
+        clrRecent.setVisible(false);
 
     }
 
@@ -758,70 +795,83 @@ private void addButtonToTable() {
         addToDeleteSongCol.setVisible(false);
         addToFavotiteCol.setVisible(false);
         topLabel.setText("Playlist");
+        clrRecent.setVisible(false);
     }
 
 
 
     public void play() throws SQLException, ClassNotFoundException {
 
-         Song curr_song = songTable.getSelectionModel().getSelectedItem();
-         String song = curr_song.getSongName();
-         nowPlaying.setText(song);
-        String query = String.format("%s=\"%s\";","SELECT path_ from track where track_name",song);
-        System.out.println(query);
-
-        CallableStatement cstmt=connection. prepareCall("CALL noOfStreams(?)");
-        cstmt.setString(1, song);//noOfStreams
-        cstmt.executeUpdate();
-        System.out.println("yes");
-
-        setConnection();
-        String query1=String.format("SELECT track_id FROM track WHERE track_name=\"%s\"",song);
-        PreparedStatement pst1=connection.prepareStatement(query1);
-        ResultSet rs=pst1.executeQuery();
-        rs.next();
-        int trackId=rs.getInt(1);
-
-        String CheckPesenceOfSongInRecentlyPlayed=String.format("SELECT track_id FROM recently_played WHERE track_id=\"%d\" AND user_id=\"%d\"",trackId,userId);
-        PreparedStatement pst=connection.prepareStatement(CheckPesenceOfSongInRecentlyPlayed);
-        ResultSet rss=pst.executeQuery();
-       // rss.next();
-        //!rss.getString(1).equals("")
-       if(!rss.next()) {
-
-            CallableStatement c = connection.prepareCall("CALL recently_played(?,?,?)");
-            c.setInt(1, trackId);
-            c.setInt(2, userId);   // @Phani TODO add user_id instead of 0
-            //c.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
-            c.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
-            c.executeUpdate();
+        if(userId==0){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.setTitle("");
+            alert.setHeaderText(null);
+            alert.setContentText("Please login to enjoy the music.");
+            alert.showAndWait();
         }
-        System.out.println("yes");
+        else {
 
 
-        setConnection();
-        PreparedStatement prepmnt= null;
-        try {
-            prepmnt = connection.prepareStatement(query);
-            ResultSet rs1;
-            rs1 = prepmnt.executeQuery(query);
+            Song curr_song = songTable.getSelectionModel().getSelectedItem();
+            String song = curr_song.getSongName();
+            nowPlaying.setText(song);
+            String query = String.format("%s=\"%s\";", "SELECT path_ from track where track_name", song);
+            System.out.println(query);
 
-            if (rs1==null)
-                System.out.println("nothing here");
-            if (rs1.next()) {
+            CallableStatement cstmt = connection.prepareCall("CALL noOfStreams(?)");
+            cstmt.setString(1, song);//noOfStreams
+            cstmt.executeUpdate();
+            System.out.println("yes");
 
-                String song_path = rs1.getString("path_");
-                System.out.println(song_path);
-                mp3=new MP3Player(new File(song_path));
-                playy(mp3,song_path);
-                pauseBtn.setVisible(true);
-                pauseImage.setVisible(true);
-                playBtn.setVisible(false);
-                playImage.setVisible(false);
+            setConnection();
+            String query1 = String.format("SELECT track_id FROM track WHERE track_name=\"%s\"", song);
+            PreparedStatement pst1 = connection.prepareStatement(query1);
+            ResultSet rs = pst1.executeQuery();
+            rs.next();
+            int trackId = rs.getInt(1);
 
+            String CheckPesenceOfSongInRecentlyPlayed = String.format("SELECT track_id FROM recently_played WHERE track_id=\"%d\" AND user_id=\"%d\"", trackId, userId);
+            PreparedStatement pst = connection.prepareStatement(CheckPesenceOfSongInRecentlyPlayed);
+            ResultSet rss = pst.executeQuery();
+            // rss.next();
+            //!rss.getString(1).equals("")
+            if (!rss.next()) {
+
+                CallableStatement c = connection.prepareCall("CALL recently_played(?,?,?)");
+                c.setInt(1, trackId);
+                c.setInt(2, userId);   // @Phani TODO add user_id instead of 0
+                //c.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+                c.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+                c.executeUpdate();
             }
-        } catch (SQLException ex) {
-            System.err.println(ex.getMessage());
+            System.out.println("yes");
+
+
+            setConnection();
+            PreparedStatement prepmnt = null;
+            try {
+                prepmnt = connection.prepareStatement(query);
+                ResultSet rs1;
+                rs1 = prepmnt.executeQuery(query);
+
+                if (rs1 == null)
+                    System.out.println("nothing here");
+                if (rs1.next()) {
+
+                    String song_path = rs1.getString("path_");
+                    System.out.println(song_path);
+                    mp3 = new MP3Player(new File(song_path));
+                    playy(mp3, song_path);
+                    pauseBtn.setVisible(true);
+                    pauseImage.setVisible(true);
+                    playBtn.setVisible(false);
+                    playImage.setVisible(false);
+
+                }
+            } catch (SQLException ex) {
+                System.err.println(ex.getMessage());
+            }
         }
 
     }
@@ -904,8 +954,6 @@ private void addButtonToTable() {
 
 
     }
-
-
     @FXML
     public void okBtnActionHandler() throws SQLException, ClassNotFoundException {
 
@@ -923,6 +971,12 @@ private void addButtonToTable() {
 
         statement1.executeUpdate();
         anchorpaneCreatePlaylist.setVisible(false);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.initStyle(StageStyle.UTILITY);
+        alert.setTitle("Message");
+        alert.setHeaderText(null);
+        alert.setContentText("New playlist "+newPlaylistName+" created.");
+        alert.showAndWait();
 
 
     }
@@ -1019,6 +1073,27 @@ public static void UnlockFunctionalities(boolean bool){
         addToFavoriteButtonToTable();
         addToFavotiteCol.setVisible(true);
         topLabel.setText("Trending Songs");
+
+
+    }
+
+    public void clearRecentlyPlayed() throws SQLException, ClassNotFoundException {
+
+        String query=String.format("DELETE FROM recently_played WHERE user_id=\"%d\"",userId);
+        setConnection();
+        PreparedStatement pst=connection.prepareStatement(query);
+        int rows=pst.executeUpdate();
+        System.out.println(rows);
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.initStyle(StageStyle.UTILITY);
+        alert.setTitle("Message");
+        alert.setHeaderText(null);
+        alert.setContentText("Your data of recently played has been cleared.");
+        alert.showAndWait();
+
+        recentlyPlayed();//to refresh the table.(empty table will be displayed)
+
 
 
     }

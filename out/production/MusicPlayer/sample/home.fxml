@@ -319,6 +319,7 @@
             </RadialGradient>
          </textFill>
       </Label>
+      <JFXButton fx:id="clrRecent" layoutX="291.0" layoutY="150.0" onAction="#clearRecentlyPlayed" prefHeight="26.0" prefWidth="141.0" style="-fx-background-color: #1a1c20;" text="Clear recently played" textFill="WHITE" />
    </children>
    <padding>
       <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />

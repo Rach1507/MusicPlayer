@@ -7,6 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -14,6 +15,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.sql.*;
 
@@ -167,14 +169,35 @@ public class PlaylistLoader extends ActionEvent {
             rs2.next();
             System.out.println(rs2.getString(1)+" track_id retreived");
             int trackId=Integer.parseInt(rs2.getString(1));
-            String insertIntoPcontainsTable=String.format("INSERT INTO p_contains VALUES(%d,%d,%d)",trackId,playlistId,Controller.userId);
 
-            PreparedStatement statement3 = connection.prepareStatement(insertIntoPcontainsTable);
-           int affectedRows= statement3.executeUpdate();
-           System.out.println("Affected rows are "+affectedRows);
+            String toCheckIfExistsInPlaylist=String.format("SELECT track_id FROM p_contains WHERE track_id=\"%d\" AND user_id=\"%d\"",trackId,Controller.userId);
+            PreparedStatement pstCheck=connection.prepareStatement(toCheckIfExistsInPlaylist);
+            ResultSet rstcheck=pstCheck.executeQuery();
+            if(rstcheck.next()){
+                System.out.println(songName+" is already in "+playlistString+" playlist");
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.initStyle(StageStyle.UTILITY);
+                alert.setTitle("");
+                alert.setHeaderText(null);
+                alert.setContentText("Song is already in "+playlistString+" playlist");
+                alert.showAndWait();
+            }
+            else {
+                String insertIntoPcontainsTable = String.format("INSERT INTO p_contains VALUES(%d,%d,%d)", trackId, playlistId, Controller.userId);
 
-            Stage stage= (Stage) doneBtn.getScene().getWindow();
-            stage.close();
+                PreparedStatement statement3 = connection.prepareStatement(insertIntoPcontainsTable);
+                int affectedRows = statement3.executeUpdate();
+                System.out.println("Affected rows are " + affectedRows);
+
+                Stage stage = (Stage) doneBtn.getScene().getWindow();
+                stage.close();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.initStyle(StageStyle.UTILITY);
+                alert.setTitle("");
+                alert.setHeaderText(null);
+                alert.setContentText("Song added to " + playlistString);
+                alert.showAndWait();
+            }
         }
     }
 
