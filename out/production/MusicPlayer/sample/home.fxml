@@ -215,7 +215,7 @@
             </JFXTextField>
             <JFXButton layoutX="467.0" layoutY="80.0" text="   ">
                <graphic>
-                  <ImageView fitHeight="29.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="forwardBtn" fitHeight="29.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true" visible="false">
                      <image>
                         <Image url="@icons/baseline_skip_next_white_18dp.png" />
                      </image>
@@ -224,7 +224,7 @@
             </JFXButton>
             <JFXButton layoutX="254.0" layoutY="79.0" text="  ">
                <graphic>
-                  <ImageView fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="backwardBtn" fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true" visible="false">
                      <image>
                         <Image url="@icons/baseline_skip_previous_white_18dp.png" />
                      </image>
@@ -273,7 +273,7 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </JFXButton>
-      <JFXTextField fx:id="SRC" labelFloat="true" layoutX="855.0" layoutY="104.0" opacity="0.54" prefHeight="53.0" prefWidth="214.0" promptText="Explore">
+      <JFXTextField fx:id="SRC" labelFloat="true" layoutX="855.0" layoutY="104.0" onKeyTyped="#search" opacity="0.54" prefHeight="53.0" prefWidth="214.0" promptText="Explore">
          <font>
             <Font name="System Italic" size="20.0" />
          </font>

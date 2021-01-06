@@ -216,17 +216,14 @@ public class loginController {
        if(!e.contains("@")){
            return false;
        }else{
-           if(!e.substring((e.length()-4),e.length()).equals(".com")||!e.substring((e.length()-3),e.length()).equals(".in")){
+           if(!e.substring((e.length()-4),e.length()).equals(".com")){//||!e.substring((e.length()-3),e.length()).equals(".in")){
                return false;
            }else{
                String s[]=e.split("@");
                if(s[0]==""){
                    return false;
                }
-               String s1[]=s[1].split(".");
-               if(s1[0]==""){
-                   return false;
-               }
+
            }
        }
 

@@ -161,16 +161,29 @@ public class Controller extends ActionEvent {
     public static void initDataSignUp(String username,String email,String password,String secretkey) throws SQLException, ClassNotFoundException {
 
         setConnection();
-        String query="INSERT INTO users(user_name,password,email_id,secret_key) VALUES(?,?,?,?);";
-        PreparedStatement statement1=connection.prepareStatement(query);
-        statement1.setString(1,username);
-        statement1.setString(2,password);
-        statement1.setString(3,email);
-        statement1.setString(4,secretkey);
+        String toCheckUserRegisteredOrNot=String.format("SELECT user_id FROM users WHERE user_name=\"%S\" AND email_id=\"%s\"",username,email);
+        PreparedStatement pst=connection.prepareStatement(toCheckUserRegisteredOrNot);
+        ResultSet rs=pst.executeQuery();
+        if(rs.next()){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.setTitle("");
+            alert.setHeaderText(null);
+            alert.setContentText("Hmmmm....You've already registered."+"\n"+"Just hop in and get some good music ;)");
+            alert.showAndWait();
 
-        int affectedRows=statement1.executeUpdate();
-        System.out.println("Inserted new user to  the DB "+affectedRows);
+        }
+        else {
+            String query = "INSERT INTO users(user_name,password,email_id,secret_key) VALUES(?,?,?,?);";
+            PreparedStatement statement1 = connection.prepareStatement(query);
+            statement1.setString(1, username);
+            statement1.setString(2, password);
+            statement1.setString(3, email);
+            statement1.setString(4, secretkey);
 
+            int affectedRows = statement1.executeUpdate();
+            System.out.println("Inserted new user to  the DB " + affectedRows);
+        }
         userEmailid=email;
         userName=username;
 
@@ -206,6 +219,8 @@ public class Controller extends ActionEvent {
 
         addNoOfTracksCol.setVisible(false);
         clrRecent.setVisible(false);
+
+
 
 }
 
@@ -464,6 +479,15 @@ private void addButtonToTable() {
                                 goToArtist.setVisible(true);
                                 addSongToPlaylistCol.setVisible(false);
                                 addToDeleteSongCol.setVisible(false);
+                                addNoOfTracksCol.setVisible(true);
+                                addToFavotiteCol.setVisible(false);
+
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                alert.initStyle(StageStyle.UTILITY);
+                                alert.setTitle("");
+                                alert.setHeaderText(null);
+                                alert.setContentText( trackName+ " deleted from playlist.");
+                                alert.showAndWait();
 
                             } catch (SQLException | ClassNotFoundException throwables) {
                                 throwables.printStackTrace();
@@ -669,12 +693,16 @@ private void addButtonToTable() {
     @FXML
     private void search() throws SQLException, ClassNotFoundException {
 
-        String song = SRC.getText();
-        String query = String.format("%s%s%s","SELECT track_name from track where track_name like '%",song,"%';");
-        System.out.println(query);
-        ObservableList<Song> artistSongs=getallSongs(query);
-        songTable.refresh();
-        songTable.setItems(artistSongs);
+        try {
+            String song = SRC.getText();
+            String query = String.format("%s%s%s", "SELECT track_name from track where track_name like '%", song, "%';");
+            System.out.println(query);
+            ObservableList<Song> artistSongs = getallSongs(query);
+            songTable.refresh();
+            songTable.setItems(artistSongs);
+        }catch(Exception e){
+
+        }
 
     }
 
@@ -705,6 +733,7 @@ private void addButtonToTable() {
         addToDeleteSongCol.setVisible(false);
         goToArtist.setVisible(false);
         addSongToPlaylistCol.setVisible(true);
+        clrRecent.setVisible(false);
 
     }
 
@@ -1072,6 +1101,7 @@ public static void UnlockFunctionalities(boolean bool){
         addToDeleteSongCol.setVisible(false);
         addToFavoriteButtonToTable();
         addToFavotiteCol.setVisible(true);
+        clrRecent.setVisible(false);
         topLabel.setText("Trending Songs");
 
 
