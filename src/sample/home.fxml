@@ -273,7 +273,7 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </JFXButton>
-      <JFXTextField fx:id="SRC" labelFloat="true" layoutX="855.0" layoutY="104.0" opacity="0.54" prefHeight="53.0" prefWidth="214.0" promptText="Explore">
+      <JFXTextField fx:id="SRC" labelFloat="true" layoutX="855.0" layoutY="104.0" onKeyTyped="#search" opacity="0.54" prefHeight="53.0" prefWidth="214.0" promptText="Explore">
          <font>
             <Font name="System Italic" size="20.0" />
          </font>
