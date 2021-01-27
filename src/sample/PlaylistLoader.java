@@ -170,7 +170,7 @@ public class PlaylistLoader extends ActionEvent {
             System.out.println(rs2.getString(1)+" track_id retreived");
             int trackId=Integer.parseInt(rs2.getString(1));
 
-            String toCheckIfExistsInPlaylist=String.format("SELECT track_id FROM p_contains WHERE track_id=\"%d\" AND user_id=\"%d\"",trackId,Controller.userId);
+            String toCheckIfExistsInPlaylist=String.format("SELECT track_id FROM p_contains WHERE track_id=\"%d\" AND user_id=\"%d\" AND playlist_id=\"%d\"",trackId,Controller.userId,playlistId);
             PreparedStatement pstCheck=connection.prepareStatement(toCheckIfExistsInPlaylist);
             ResultSet rstcheck=pstCheck.executeQuery();
             if(rstcheck.next()){
