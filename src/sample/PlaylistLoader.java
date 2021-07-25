@@ -142,14 +142,31 @@ public class PlaylistLoader extends ActionEvent {
         setConnection();
         if(doneBtn.getText().equals("Create")){
             String newPlaylist=textField.getText();
-            long d = System.currentTimeMillis();
-            Date datee = new Date(d);
-            System.out.println(datee);
-            String query=String.format("INSERT INTO playlists(user_id,playlist_name,date_added)"+" values(\"%d\",\"%s\",\"%s\")",Controller.userId,newPlaylist,String.valueOf(datee));
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.executeUpdate();
-            Stage stage= (Stage) doneBtn.getScene().getWindow();
-            stage.close();
+            if(newPlaylist.equals("")){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.initStyle(StageStyle.UTILITY);
+                alert.setTitle("Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Playlist name cannot be empty");
+                alert.showAndWait();
+
+            }else {
+                long d = System.currentTimeMillis();
+                Date datee = new Date(d);
+                System.out.println(datee);
+                String query = String.format("INSERT INTO playlists(user_id,playlist_name,date_added)" + " values(\"%d\",\"%s\",\"%s\")", Controller.userId, newPlaylist, datee);
+                PreparedStatement statement = connection.prepareStatement(query);
+
+                statement.executeUpdate();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.initStyle(StageStyle.UTILITY);
+                alert.setTitle("Message");
+                alert.setHeaderText(null);
+                alert.setContentText("New playlist " + newPlaylist + " created.");
+                alert.showAndWait();
+                Stage stage = (Stage) doneBtn.getScene().getWindow();
+                stage.close();
+            }
         }else{
             Song curr_playlist = playlistTable.getSelectionModel().getSelectedItem();
             String playlistString=curr_playlist.getPlaylistName();
