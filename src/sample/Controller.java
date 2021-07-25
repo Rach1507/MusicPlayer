@@ -27,6 +27,10 @@ import javafx.util.Callback;
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Controller extends ActionEvent {
 
@@ -641,6 +645,7 @@ private void addButtonToTable() {
         addButtonToTable();
         addSongToPlaylistBtn();
         addSongToPlaylistCol.setVisible(true);
+        songColumn.setText("Track");
 
     }
 
@@ -666,6 +671,7 @@ private void addButtonToTable() {
         addSongToPlaylistBtn();
         addSongToPlaylistCol.setVisible(true);
         addNoOfTracksCol.setVisible(false);
+        songColumn.setText("Track");
 
     }
 
@@ -687,6 +693,7 @@ private void addButtonToTable() {
         ObservableList<Song> artistSongs=getallSongs(query);
         songTable.refresh();
         songTable.setItems(artistSongs);
+        songColumn.setText("Track");
 
     }
 
@@ -728,7 +735,7 @@ private void addButtonToTable() {
         songTable.setItems(songList);
         addToFavotiteCol.setVisible(false);
         topLabel.setText("Your Favorites");
-        songColumn.setText("Albums");
+        songColumn.setText("Track");
         addNoOfTracksCol.setVisible(false);
         addToDeleteSongCol.setVisible(false);
         goToArtist.setVisible(false);
@@ -740,7 +747,7 @@ private void addButtonToTable() {
     @FXML
     private void recentlyPlayed() throws SQLException, ClassNotFoundException {
         songColumn.setCellValueFactory(new PropertyValueFactory<Song,String>("songName"));
-        String query = String.format("SELECT track_name FROM track WHERE track_id in (SELECT track_id  from recently_Played where user_id=\"%d\" order by date_played)",userId);//"%s=%d",
+        String query = String.format("SELECT track_name FROM track  WHERE  track_id in (SELECT track_id  from recently_Played where user_id=\"%d\" order by date_played) ",userId);//"%s=%d",
         String query1="";
 
         ObservableList<Song> songList = getallSongs(query);
@@ -748,7 +755,7 @@ private void addButtonToTable() {
         songTable.setItems(songList);
         goToArtist.setVisible(false);
         addToDeleteSongCol.setVisible(false);
-        addToFavotiteCol.setVisible(false);
+        addToFavotiteCol.setVisible(true);
         addSongToPlaylistCol.setVisible(true);
         topLabel.setText("Recently Played");
         songColumn.setText("Track");
@@ -768,6 +775,7 @@ private void addButtonToTable() {
         goToArtist.setText("Go to Artist");
         songTable.refresh();
         songTable.setItems(artistSongs);
+        songColumn.setText("Track");
 
     }
 
@@ -870,8 +878,13 @@ private void addButtonToTable() {
                 CallableStatement c = connection.prepareCall("CALL recently_played(?,?,?)");
                 c.setInt(1, trackId);
                 c.setInt(2, userId);   // @Phani TODO add user_id instead of 0
-                //c.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
                 c.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+               // DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                //LocalDateTime now = LocalDateTime.now();
+               // c.setTimestamp(3, new Timestamp(System.currentTimeMillis());
+               // SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+             //   Date date = new Date();
+             //   c.setTimestamp(3, Timestamp.valueOf(formatter.format(date)));
                 c.executeUpdate();
             }
             System.out.println("yes");
@@ -987,27 +1000,44 @@ private void addButtonToTable() {
     public void okBtnActionHandler() throws SQLException, ClassNotFoundException {
 
         String newPlaylistName=newPlaylistTextField.getText();
-        long d = System.currentTimeMillis();
-        Date datee = new Date(d);
+        if(newPlaylistName.equals("")){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.setTitle("Message");
+            alert.setHeaderText(null);
+            alert.setContentText("Playlist name cannot be empty");
+            alert.showAndWait();
 
-        String query="INSERT INTO playlists(user_id,playlist_name,date_added) VALUES(?,?,?)";
+        }else {
 
-        setConnection();
-        PreparedStatement statement1=connection.prepareStatement(query);
-        statement1.setInt(1,userId);
-        statement1.setString(2,newPlaylistName);
-        statement1.setString(3, String.valueOf(datee));
+            long d = System.currentTimeMillis();
+            Date datee = new Date(d);
 
-        statement1.executeUpdate();
-        anchorpaneCreatePlaylist.setVisible(false);
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.initStyle(StageStyle.UTILITY);
-        alert.setTitle("Message");
-        alert.setHeaderText(null);
-        alert.setContentText("New playlist "+newPlaylistName+" created.");
-        alert.showAndWait();
+            String query = "INSERT INTO playlists(user_id,playlist_name,date_added) VALUES(?,?,?)";
 
+            setConnection();
+            long dd = System.currentTimeMillis();
+            java.sql.Date dateee = new java.sql.Date(d);
+            System.out.println(dateee);
+            String query2 = String.format("INSERT INTO playlists(user_id,playlist_name,date_added)" + " values(\"%d\",\"%s\",\"%s\")", Controller.userId, newPlaylistName, dateee);
+            PreparedStatement statement = connection.prepareStatement(query2);
 
+            statement.executeUpdate();
+          /*  PreparedStatement statement1 = connection.prepareStatement(query);
+            statement1.setInt(1, userId);
+            statement1.setString(2, newPlaylistName);
+            statement1.setTimestamp(3, Timestamp.valueOf(String.valueOf(datee)));
+
+            statement1.executeUpdate();*/
+            anchorpaneCreatePlaylist.setVisible(false);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.setTitle("Message");
+            alert.setHeaderText(null);
+            alert.setContentText("New playlist " + newPlaylistName + " created.");
+            alert.showAndWait();
+
+        }
     }
 
 
